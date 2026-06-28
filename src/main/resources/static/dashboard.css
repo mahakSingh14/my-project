@@ -1,0 +1,150 @@
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    background: linear-gradient(135deg, #1e1b4b, #2a1f6f);
+    color: white;
+}
+
+/* NAVBAR */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    background: rgba(0,0,0,0.3);
+}
+
+/* LOGO */
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-img {
+    width: 40px;
+}
+
+.logo-text {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+/* NAV LINKS */
+.nav-links {
+    display: flex;
+    gap: 25px;
+}
+
+.nav-links a {
+    color: #ccc;
+    text-decoration: none;
+}
+
+.nav-links a.active {
+    color: white;
+}
+
+/* USER */
+.user-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* LOGOUT BUTTON */
+#logoutBtn {
+    background: #7c5cff;
+    border: none;
+    color: white;
+    padding: 6px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+/* HERO */
+.hero {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.hero input {
+    padding: 12px;
+    border-radius: 25px;
+    border: none;
+    width: 300px;
+}
+
+/* POSTS */
+.posts-section {
+    padding: 40px;
+}
+
+.posts-container {
+    max-width: 800px;
+    margin: auto;
+}
+
+.post-card {
+    background: white;
+    color: black;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 15px;
+}
+
+.cta-section {
+    background: #f5f5f5;
+    color: black;
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.cta-section h2 {
+    font-size: 36px;
+    margin-bottom: 30px;
+    font-family: 'Playfair Display', serif;
+}
+
+.cta-btn {
+    background: linear-gradient(135deg, #7c5cff, #5f27cd);
+    color: white;
+    padding: 14px 40px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.cta-btn:hover {
+    opacity: 0.9;
+}
+
+/* FOOTER */
+.footer {
+    background: #1e1b4b;
+    padding: 50px 40px;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.footer-col h3 {
+    margin-bottom: 15px;
+}
+
+.footer-col p {
+    color: #ccc;
+    margin-bottom: 8px;
+}

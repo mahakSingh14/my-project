@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up - Amanat</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI', sans-serif;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#1e1e2f,#2b2b45);
+}
+
+/* ================= LOGO ================= */
+
+.logo-wrapper{
+    position:absolute;
+    top:30px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    cursor:pointer;
+}
+
+.logo-img{
+    width:45px;
+    height:45px;
+    object-fit:contain;
+}
+
+.logo-text{
+    font-size:22px;
+    font-weight:bold;
+    letter-spacing:2px;
+    color:white;
+    transition:0.3s;
+}
+
+.logo-wrapper:hover .logo-text{
+    color:#c084fc;
+}
+
+/* ================= AUTH CARD ================= */
+
+.auth-container{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.auth-card{
+    width:420px;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(25px);
+    padding:40px;
+    border-radius:20px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.4);
+    color:white;
+    animation:fadeIn 0.8s ease;
+}
+
+.auth-title{
+    font-size:24px;
+    margin-bottom:5px;
+}
+
+.auth-subtitle{
+    font-size:14px;
+    opacity:0.8;
+    margin-bottom:25px;
+}
+
+/* ================= INPUTS ================= */
+
+.input-group{
+    margin-bottom:18px;
+    text-align:left;
+}
+
+.input-group label{
+    font-size:13px;
+    opacity:0.9;
+}
+
+.input-group input{
+    width:100%;
+    padding:10px;
+    margin-top:6px;
+    border-radius:8px;
+    border:none;
+    outline:none;
+    background:rgba(255,255,255,0.15);
+    color:white;
+}
+
+.input-group input::placeholder{
+    color:rgba(255,255,255,0.5);
+}
+
+/* ================= BUTTON ================= */
+
+.auth-btn{
+    width:100%;
+    padding:12px;
+    border-radius:30px;
+    border:none;
+    background:#9333ea;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+    margin-top:10px;
+}
+
+.auth-btn:hover{
+    background:#c084fc;
+    transform:scale(1.03);
+}
+
+/* ================= GOOGLE ================= */
+
+.google-btn{
+    display:block;
+    text-align:center;
+    padding:10px;
+    border-radius:25px;
+    background:white;
+    color:black;
+    font-weight:500;
+    text-decoration:none;
+    margin-top:15px;
+    transition:0.3s;
+}
+
+.google-btn:hover{
+    background:#f1f1f1;
+}
+
+/* ================= DIVIDER ================= */
+
+.divider{
+    text-align:center;
+    margin:20px 0;
+    position:relative;
+}
+
+.divider::before,
+.divider::after{
+    content:"";
+    position:absolute;
+    top:50%;
+    width:45%;
+    height:1px;
+    background:rgba(255,255,255,0.2);
+}
+
+.divider::before{ left:0; }
+.divider::after{ right:0; }
+
+.divider span{
+    padding:0 10px;
+    font-size:13px;
+    opacity:0.7;
+}
+
+/* ================= LINKS ================= */
+
+.switch-text{
+    margin-top:18px;
+    font-size:14px;
+}
+
+.switch-text a{
+    color:#c084fc;
+    text-decoration:none;
+    font-weight:500;
+}
+
+.switch-text a:hover{
+    text-decoration:underline;
+}
+
+.back-home{
+    display:block;
+    margin-top:20px;
+    font-size:13px;
+    text-decoration:none;
+    color:#aaa;
+}
+
+.back-home:hover{
+    color:white;
+}
+
+/* ================= ANIMATION ================= */
+
+@keyframes fadeIn{
+    from{opacity:0; transform:translateY(20px);}
+    to{opacity:1; transform:translateY(0);}
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- LOGO -->
+<div class="logo-wrapper">
+    <img src="amanat-logo.png" class="logo-img">
+    <span class="logo-text">Amanat</span>
+</div>
+
+<!-- SIGNUP CARD -->
+<div class="auth-container">
+<div class="auth-card">
+
+<h2 class="auth-title">Create Your Amanat Account</h2>
+
+<p class="auth-subtitle">Your private diary begins here</p>
+
+<form id="signupForm">
+    <div class="input-group">
+        <label>Full Name</label>
+        <input type="text" id="name" placeholder="Enter your full name" required>
+    </div>
+
+    <div class="input-group">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="Enter your email" required>
+    </div>
+
+    <div class="input-group">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Create a password" required>
+    </div>
+
+    <button type="submit" class="auth-btn">Create Account</button>
+</form>
+
+<div class="divider">
+    <span>OR</span>
+</div>
+
+<a href="/oauth2/authorization/google" class="google-btn">
+    Continue with Google
+</a>
+
+<p class="switch-text">
+    Already have an account? 
+    <a href="login.html">Login</a>
+</p>
+
+<a href="index.html" class="back-home">
+    ← Back to Home
+</a>
+
+</div>
+</div>
+
+<script>
+document.getElementById("signupForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    const name=document.getElementById("name").value;
+    const email=document.getElementById("email").value;
+    const password=document.getElementById("password").value;
+
+    fetch("http://localhost:8080/api/auth/signup", {
+
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body:JSON.stringify({ name,email,password })
+    })
+    .then(response=>{
+        if(!response.ok){
+            return response.text().then(text=>{ throw new Error(text); });
+        }
+        return response.text();
+    })
+    .then(()=>{
+        alert("Signup successful ,Please login.");
+        window.location.href="login.html";
+    })
+    .catch(error=>{
+        alert("Error: "+error.message);
+        console.error(error);
+    });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Amanat Public Feed</title>
+<style>
+
+body {
+  background: linear-gradient(135deg, #1e1e2f, #2c2c44);
+  font-family: Arial;
+  margin: 0;
+  padding: 40px;
+  color: white;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.feed-container {
+  max-width: 700px;
+  margin: auto;
+}
+
+.post-card {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 15px;
+  transition: 0.3s;
+}
+
+.post-card:hover {
+  transform: scale(1.02);
+}
+
+.post-author {
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #c084fc;
+}
+
+.post-date {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-bottom: 10px;
+}
+
+.post-content {
+  white-space: pre-wrap;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1> Amanat Public Feed</h1>
+
+<div class="feed-container" id="feedContainer">
+Loading posts...
+</div>
+
+<script>
+
+async function loadFeed() {
+  try {
+    const response = await fetch("http://localhost:8080/api/posts/public");
+    const posts = await response.json();
+
+    const container = document.getElementById("feedContainer");
+    container.innerHTML = "";
+
+    if(posts.length === 0){
+      container.innerHTML = "<p style='text-align:center;'>No posts yet</p>";
+      return;
+    }
+
+    posts.forEach(post => {
+
+      const card = document.createElement("div");
+      card.className = "post-card";
+
+      card.innerHTML = `
+        <div class="post-author">${post.authorName || "Anonymous"}</div>
+        <div class="post-date">${new Date(post.createdAt).toLocaleString()}</div>
+        <div class="post-content">${post.content}</div>
+      `;
+
+      container.appendChild(card);
+    });
+
+  } catch (error) {
+    document.getElementById("feedContainer").innerHTML = "Error loading feed ❌";
+  }
+}
+
+loadFeed();
+
+</script>
+
+</body>
+</html>

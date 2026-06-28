@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Creative Challenges • The Scribbler's Sanctuary</title>
+  <style>
+    :root {
+      --bg: #0f0817;
+      --card: #1a1229;
+      --accent: #c084fc;
+      --accent-dark: #a855f7;
+      --text: #f3e8ff;
+      --text-muted: #c4b5fd;
+      --success: #34d399;
+      --warning: #fbbf24;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+    header {
+      background: linear-gradient(135deg, #4c1d95, #7e22ce);
+      padding: 2.5rem 1.5rem 2rem;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+    }
+    .back-btn {
+      position: absolute;
+      left: 1.5rem;
+      top: 1.5rem;
+      background: rgba(255,255,255,0.15);
+      color: white;
+      border: none;
+      padding: 0.7rem 1.3rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.3); }
+
+    h1 { font-size: 2.6rem; margin-bottom: 0.5rem; text-shadow: 0 2px 12px rgba(0,0,0,0.5); }
+    .subtitle { color: var(--text-muted); font-size: 1.1rem; }
+
+    .stats {
+      background: var(--card);
+      margin: 1.8rem auto;
+      max-width: 1100px;
+      padding: 1.6rem;
+      border-radius: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+    .stat-item { text-align: center; min-width: 140px; }
+    .points-big { font-size: 2.8rem; font-weight: 800; color: var(--accent); }
+    .label { color: var(--text-muted); font-size: 0.95rem; margin-top: 0.3rem; }
+
+    .progress-ring {
+      position: relative;
+      width: 110px;
+      height: 110px;
+      margin: 0 auto 0.6rem;
+    }
+    .progress-ring svg { transform: rotate(-90deg); }
+    circle { fill: none; stroke-width: 10; }
+    .ring-bg { stroke: #2d1b47; }
+    .ring-fg { stroke: var(--accent); stroke-linecap: round; transition: stroke-dashoffset 0.7s ease; }
+
+    .progress-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .container { max-width: 1100px; margin: 2rem auto; padding: 0 1.2rem; }
+
+    .challenge-card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 1.8rem;
+      margin-bottom: 1.6rem;
+      display: flex;
+      gap: 1.5rem;
+      transition: transform 0.18s, box-shadow 0.18s;
+      border: 1px solid #3a2559;
+    }
+    .challenge-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.5); }
+
+    .icon {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.1rem;
+      flex-shrink: 0;
+    }
+
+    .content { flex: 1; }
+    .title { font-size: 1.45rem; margin-bottom: 0.5rem; color: #e9d5ff; }
+    .desc { color: var(--text-muted); line-height: 1.5; margin-bottom: 0.9rem; }
+    .end-date { font-size: 0.9rem; color: #f87171; margin-bottom: 0.7rem; }
+
+    .status {
+      display: inline-block;
+      padding: 0.45rem 1rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.9rem;
+    }
+    .not-started { background: #2d1b47; color: #c4b5fd; }
+    .in-progress { background: #422c6e; color: var(--warning); }
+    .completed   { background: #14532d; color: var(--success); }
+
+    button.action {
+      background: var(--accent);
+      color: black;
+      border: none;
+      padding: 0.8rem 1.6rem;
+      border-radius: 999px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    button.action:hover { background: #d8b4fe; transform: translateY(-1px); }
+    button.action:disabled {
+      background: #4a3b5f;
+      color: #8b7ab8;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal-content {
+      background: var(--card);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 680px;
+      max-height: 92vh;
+      overflow-y: auto;
+      padding: 2rem;
+      border: 1px solid #4a3b5f;
+    }
+    .close { float: right; font-size: 2.2rem; cursor: pointer; color: var(--text-muted); }
+    .close:hover { color: white; }
+
+    textarea {
+      width: 100%;
+      min-height: 220px;
+      padding: 1rem;
+      background: #140f1f;
+      color: white;
+      border: 1px solid #4a3b5f;
+      border-radius: 10px;
+      font-size: 1.05rem;
+      resize: vertical;
+      margin: 1.2rem 0;
+    }
+
+    #random-objects {
+      background: #2d1b47;
+      padding: 1rem;
+      border-radius: 10px;
+      margin: 1rem 0;
+      border: 1px dashed var(--accent);
+    }
+
+    .confetti { position: fixed; inset: 0; pointer-events: none; z-index: 2000; display: none; }
+
+    .badge-tip {
+      background: #2e1b47;
+      border-left: 4px solid var(--warning);
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      color: #f3e8ff;
+    }
+    .milestone-badge {
+      display: inline-block;
+      background: #7131b3;
+      color: white;
+      padding: 0.25rem 1rem;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <button class="back-btn" onclick="history.back()">← Back</button>
+  <h1>⚡ Creative Challenges</h1>
+  <div class="subtitle">Sharpen your quill • Earn points • Grow as a writer</div>
+</header>
+
+<div class="stats">
+  <div class="stat-item">
+    <div class="progress-ring">
+      <svg width="110" height="110">
+        <circle class="ring-bg" cx="55" cy="55" r="48"></circle>
+        <circle class="ring-fg" cx="55" cy="55" r="48" id="progressFg"></circle>
+      </svg>
+      <div class="progress-text" id="progressPct">0%</div>
+    </div>
+    <div class="label">Progress</div>
+  </div>
+
+  <div class="stat-item">
+    <div class="points-big" id="points">0</div>
+    <div class="label">Points</div>
+  </div>
+
+  <div class="stat-item">
+    <div class="points-big" id="completed">0 / 0</div>
+    <div class="label">Completed</div>
+  </div>
+</div>
+
+<div class="container" id="challenges"></div>
+
+<!-- Modal -->
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">×</span>
+    <h2 id="modalTitle"></h2>
+    <p id="modalDesc"></p>
+    <div id="random-objects" style="display:none;"></div>
+    <textarea id="entry" placeholder="Your creation goes here..."></textarea>
+    <button class="action" onclick="submitEntry()">Submit Work</button>
+  </div>
+</div>
+
+<canvas id="confetti" class="confetti"></canvas>
+
+<script>
+// ──────────────────────────────────────────────
+// 🎯 ENHANCED CHALLENGES – more fun, creative, and diverse 
+const challenges = [
+  {id:1, title:"The Silent Whisper", desc:"Write a 100-word story about a secret that was never told. Exactly 100 words.", end:"2025-05-15", icon:"🤫", points:50},
+  {id:2, title:"Digital Solitude", desc:"Compose a poem about finding peace in a hyper-connected world. (min 10 lines)", end:"2025-06-30", icon:"📴", points:60},
+  {id:3, title:"Enchanted Recipe", desc:"Invent a magical recipe (like a potion or enchanted dish). Include ingredients, steps, and the effect. (200–250 words)", end:"2025-07-01", icon:"🧪", points:55},
+  {id:4, title:"Objects of Memory", desc:"Write a 150-word memoir about three meaningful objects from your childhood.", end:"2025-08-12", icon:"🕰️", points:50},
+  {id:5, title:"Future Letter", desc:"Write a letter to your future self 20 years from now. (at least 220 words)", end:"2025-09-05", icon:"✉️", points:65},
+  {id:6, title:"Twisted Fairy Tale", desc:"Retell a classic fairy tale with a dark or modern twist. (250–350 words)", end:"2025-10-01", icon:"🧚", points:70},
+  {id:7, title:"Six-Word Saga", desc:"Tell a complete story in exactly six words. (seriously, only six!)", end:"2025-11-01", icon:"🔤", points:40},
+  {id:8, title:"Haunted House Inventory", desc:"Write a list of 15 eerie items found in an abandoned house, with one creepy sentence for each.", end:"2025-12-01", icon:"🏚️", points:60},
+  {id:9, title:"Genre Switch", desc:"Take a famous movie scene and rewrite it as if it were a Shakespearean play. (300 words)", end:"2026-01-15", icon:"🎭", points:75},
+  {id:10, title:"101 Names for a Cat", desc:"Create a list of 101 creative cat names (just names – but make them wild).", end:"2026-02-20", icon:"🐈", points:45},
+  {id:11, title:"Emotion Cycle", desc:"Write 7 short poems, each capturing a different emotion (joy, sorrow, anger, fear, calm, hope, love). At least 4 lines each.", end:"2026-03-10", icon:"🎭", points:80},
+  {id:12, title:"Opening Line Challenge", desc:"Write three different story openings using these lines: 'The door had never been opened.' / 'I found the map under the floorboard.' / 'They all forgot my name.' (200+ words total)", end:"2026-04-18", icon:"🚪", points:65},
+  {id:13, title:"Character interview", desc:"Write an interview with a fictional character from one of your stories. (min 10 Q&A, 300+ words)", end:"2026-05-22", icon:"🎤", points:70},
+  {id:14, title:"Three Objects, One Story", desc:"Use the three random objects shown below in a single 240–280 word story.", end:"2026-07-15", icon:"🎲📖", points:70, randomObjects:true}
+];
+
+const objectPool = [
+  "broken watch","jasmine garland","library fine receipt","rusted key","Diwali sparkler wrapper",
+  "faded Goa postcard","cracked phone screen","old wedding card","empty medicine bottle","silver earring",
+  "train ticket stub","dried rose bookmark","child crayon drawing","grandma's bangle","expired bus pass",
+  "ink-stained notebook","small brass diya","torn festival band","pressed four-leaf clover","Marine Drive polaroid",
+  "vintage fountain pen","moth-eaten scarf","chipped tea cup","compass with no needle","handwritten recipe",
+  "magnetic poetry tile","melted candle stub","one half of a ticket","pocket Shakespeare","tin of foreign buttons"
+];
+
+let user = {
+  points: parseInt(localStorage.getItem('scp')||'0'),
+  progress: JSON.parse(localStorage.getItem('scpr')||'{}'),
+  threeObjects: JSON.parse(localStorage.getItem('scthree')||'null')
+};
+
+function save() {
+  localStorage.setItem('scp', user.points);
+  localStorage.setItem('scpr', JSON.stringify(user.progress));
+  localStorage.setItem('scthree', JSON.stringify(user.threeObjects));
+}
+
+function updateStats() {
+  const total = challenges.length;
+  const done = Object.values(user.progress).filter(v=>v==='completed').length;
+  const pct = total ? Math.round(done/total*100) : 0;
+
+  document.getElementById('points').textContent = user.points;
+  document.getElementById('completed').textContent = `${done} / ${total}`;
+  document.getElementById('progressPct').textContent = `${pct}%`;
+
+  const circ = 2 * Math.PI * 48;
+  const fg = document.getElementById('progressFg');
+  fg.style.strokeDasharray = circ;
+  fg.style.strokeDashoffset = circ * (1 - pct/100);
+}
+
+function render() {
+  const cont = document.getElementById('challenges');
+  cont.innerHTML = '';
+
+  challenges.forEach(c => {
+    const st = user.progress[c.id] || 'not-started';
+    const card = document.createElement('div');
+    card.className = 'challenge-card';
+    card.innerHTML = `
+      <div class="icon">${c.icon}</div>
+      <div class="content">
+        <div class="title">${c.title} <span class="milestone-badge">${c.points} pts</span></div>
+        <div class="desc">${c.desc}</div>
+        <div class="end-date">Ends ${c.end}</div>
+        <div class="status ${st}">
+          ${st==='not-started'?'Not Started':st==='accepted'?'In Progress':'Completed ✓'}
+        </div>
+        ${st==='not-started' ? `<button class="action" onclick="startChallenge(${c.id})">Accept</button>` :
+          st==='accepted'   ? `<button class="action" onclick="openModal(${c.id})">Submit</button>` :
+          `<button class="action" disabled>Done</button>`}
+      </div>
+    `;
+    cont.appendChild(card);
+  });
+}
+
+function startChallenge(id) {
+  const chal = challenges.find(c=>c.id===id);
+  if (!chal) return;
+
+  if (chal.randomObjects) {
+    const shuffled = [...objectPool].sort(()=>0.5-Math.random());
+    user.threeObjects = {
+      id,
+      objects: shuffled.slice(0,3)
+    };
+  }
+
+  user.progress[id] = 'accepted';
+  save();
+  render();
+  updateStats();
+}
+
+let currentId = null;
+
+function openModal(id) {
+  if (user.progress[id] !== 'accepted') return;
+  currentId = id;
+  const chal = challenges.find(c=>c.id===id);
+
+  document.getElementById('modalTitle').textContent = chal.title;
+  document.getElementById('modalDesc').textContent = chal.desc;
+
+  const objDiv = document.getElementById('random-objects');
+  if (chal.randomObjects && user.threeObjects?.id === id) {
+    objDiv.innerHTML = `<strong>✨ Your three enchanted objects:</strong><br>
+      <ul style="margin:0.6rem 0 0 1.4rem; padding-left:0; list-style:disc;">
+        ${user.threeObjects.objects.map(o=>`<li><em>${o}</em></li>`).join('')}
+      </ul>`;
+    objDiv.style.display = 'block';
+  } else {
+    objDiv.style.display = 'none';
+  }
+
+  document.getElementById('entry').value = '';
+  document.getElementById('modal').style.display = 'flex';
+}
+
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+}
+
+function submitEntry() {
+  const text = document.getElementById('entry').value.trim();
+  if (text.length < 20) {
+    alert("Your creation is too short — even a tiny story needs soul ✍️");
+    return;
+  }
+
+  const chal = challenges.find(c=>c.id===currentId);
+  let valid = true;
+
+  // custom validations based on challenge type
+  const words = text.split(/\s+/).filter(Boolean).length;
+
+  if (chal.id === 1) { // silent whisper – exactly 100 words
+    if (words !== 100) {
+      alert(`❌ The Silent Whisper requires exactly 100 words. You have ${words}.`);
+      valid = false;
+    }
+  } else if (chal.id === 2) { // digital solitude – poem min 10 lines
+    const lines = text.split('\n').filter(l=>l.trim().length>0).length;
+    if (lines < 10) {
+      alert(`❌ Your poem should be at least 10 lines (you have ${lines})`);
+      valid = false;
+    }
+  } else if (chal.id === 3) { // enchanted recipe 200-250
+    if (words < 200 || words > 250) {
+      alert(`❌ Enchanted recipe must be 200–250 words (currently ${words})`);
+      valid = false;
+    }
+  } else if (chal.id === 4) { // objects of memory ~150 words
+    if (words < 140 || words > 180) {
+      alert(`❌ Please aim for around 150 words (you have ${words})`);
+      valid = false;
+    }
+  } else if (chal.id === 5) { // future letter 220+
+    if (words < 220) {
+      alert(`❌ Future letter needs at least 220 words (you have ${words})`);
+      valid = false;
+    }
+  } else if (chal.id === 6) { // twisted fairy tale 250-350
+    if (words < 250 || words > 350) {
+      alert(`❌ Twisted tale should be 250–350 words (you have ${words})`);
+      valid = false;
+    }
+  } else if (chal.id === 7) { // six-word saga
+    if (words !== 6) {
+      alert(`❌ Exactly six words, no more no less! You wrote ${words}.`);
+      valid = false;
+    }
+  } else if (chal.id === 8) { // haunted house inventory – 15 items + sentence each
+    const lines = text.split('\n').filter(l=>l.trim().length>0);
+    if (lines.length < 15) {
+      alert(`❌ You need at least 15 creepy items with sentences. You have ${lines.length}.`);
+      valid = false;
+    }
+  } else if (chal.id === 9) { // shakespeare scene – 300 words approx
+    if (words < 280 || words > 340) {
+      alert(`❌ Try to hit 300 words (±40). Currently ${words}.`);
+      valid = false;
+    }
+  } else if (chal.id === 10) { // 101 cat names
+    const items = text.split('\n').filter(l=>l.trim().length>0);
+    if (items.length < 101) {
+      alert(`❌ You need 101 cat names! You have ${items.length}.`);
+      valid = false;
+    }
+  } else if (chal.id === 11) { // 7 emotions 4 lines each = 28 min lines
+    const lines = text.split('\n').filter(l=>l.trim().length>0);
+    if (lines.length < 28) {
+      alert(`❌ Each of 7 emotions needs at least 4 lines (total ≥28 lines). You have ${lines.length}.`);
+      valid = false;
+    }
+  } else if (chal.id === 12) { // three opening lines total 200+
+    if (words < 200) {
+      alert(`❌ Total story should exceed 200 words (you have ${words})`);
+      valid = false;
+    }
+  } else if (chal.id === 13) { // interview 10 Q&A, 300+ words
+    if (words < 300) {
+      alert(`❌ Interview must be at least 300 words (you have ${words})`);
+      valid = false;
+    }
+    const qCount = (text.match(/\?/g) || []).length;
+    if (qCount < 10) {
+      alert(`❌ Include at least 10 questions (found ${qCount} question marks)`);
+      valid = false;
+    }
+  } else if (chal.id === 14 && chal.randomObjects) {
+    if (words < 240 || words > 280) {
+      alert(`❌ Story should be 240–280 words.\nYou have ${words}.`);
+      valid = false;
+    }
+    // objects check
+    if (user.threeObjects?.id === currentId) {
+      const lower = text.toLowerCase();
+      const missing = user.threeObjects.objects.filter(o => !lower.includes(o.toLowerCase()));
+      if (missing.length > 0) {
+        alert(`❌ You must use all three objects!\nMissing: ${missing.join(', ')}`);
+        valid = false;
+      }
+    }
+  }
+
+  if (!valid) return;
+
+  user.points += chal.points || 50;
+  user.progress[currentId] = 'completed';
+  if (chal.randomObjects) user.threeObjects = null;
+
+  save();
+  alert(`🏆 Amazing! +${chal.points} points. Keep creating.`);
+  closeModal();
+  render();
+  updateStats();
+  showConfetti();
+}
+
+function showConfetti() {
+  const cv = document.getElementById('confetti');
+  cv.style.display = 'block';
+  const ctx = cv.getContext('2d');
+  cv.width = window.innerWidth;
+  cv.height = window.innerHeight;
+
+  const pieces = Array.from({length:160}, ()=>({
+    x: Math.random()*cv.width,
+    y: Math.random()*cv.height - cv.height,
+    r: Math.random()*6 + 4,
+    color: `hsl(${Math.random()*360}, 90%, 60%)`,
+    rot: Math.random()*8-4,
+    vy: Math.random()*5 + 2.5,
+    vx: Math.random()*3 - 1.5
+  }));
+
+  function anim() {
+    ctx.clearRect(0,0,cv.width,cv.height);
+    pieces.forEach(p=>{
+      p.y += p.vy;
+      p.x += p.vx;
+      p.rot += 0.07;
+      if (p.y > cv.height + 50) p.y = -50;
+
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot * Math.PI/180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.r, -p.r/2, p.r*2, p.r);
+      ctx.restore();
+    });
+    requestAnimationFrame(anim);
+  }
+  anim();
+  setTimeout(()=>cv.style.display='none', 4800);
+}
+
+// Init
+window.onload = ()=>{
+  render();
+  updateStats();
+};
+window.onclick = e=>{
+  if (e.target.classList.contains('modal')) closeModal();
+};
+</script>
+</body>
+</html>

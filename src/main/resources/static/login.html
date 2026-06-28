@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Amanat</title>
+
+    <style>
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1e1e2f, #2b2b45);
+            font-family: Arial, sans-serif;
+        }
+
+        .auth-card {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 20px;
+            width: 380px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+        }
+
+        .main-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 25px;
+            border: none;
+            background: #9333ea;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .google-btn {
+            margin-top: 15px;
+            display: inline-block;
+            padding: 10px 20px;
+            background: white;
+            color: #444;
+            border-radius: 25px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="auth-card">
+
+    <h2>Login to Amanat</h2>
+
+    <form id="loginForm">
+        <input type="email" id="email" placeholder="Email" class="input-field" required>
+        <input type="password" id="password" placeholder="Password" class="input-field" required>
+
+        <button type="submit" class="main-btn">Login</button>
+    </form>
+
+    <button onclick="googleLogin()" class="google-btn">
+        Continue with Google
+    </button>
+
+</div>
+<script>
+document.getElementById("loginForm").addEventListener("submit", async function (e) {
+
+    e.preventDefault(); // very important
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    console.log("Login button clicked"); //  debug
+
+    try {
+        const response = await fetch("http://localhost:8080/api/auth/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password
+            })
+        });
+
+        const data = await response.json();
+
+        console.log("Response:", data); //  debug
+
+        if (response.status === 200) {
+
+            localStorage.setItem("userName", data.name);
+
+            alert("Login Successful .");
+
+            window.location.href = "dashboard.html"; // redirect
+
+        } else {
+            alert(data.message || "Login Failed X");
+        }
+
+    } catch (error) {
+        console.log("Error:", error);
+        alert("Server error X");
+    }
+
+});
+</script>
+
+</body>
+</html>

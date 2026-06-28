@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amanat Vault · hidden notes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at 30% 10%, #1e1b4b, #0f0f1e);
+            color: #f0e9ff;
+            transition: background 0.3s, color 0.2s;
+        }
+
+        body.light {
+            background: #f5f0fa;
+            color: #1e1b2e;
+        }
+
+        /* main container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            position: relative;
+            z-index: 5;
+        }
+
+        .glass {
+            background: rgba(20, 15, 40, 0.4);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 2rem;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.6);
+        }
+
+        body.light .glass {
+            background: rgba(255, 255, 255, 0.6);
+            border-color: rgba(160, 120, 255, 0.2);
+        }
+
+        /* login / vault screens */
+        .hidden {
+            display: none !important;
+        }
+
+        /* login card */
+        #loginScreen {
+            max-width: 460px;
+            margin: 4rem auto 2rem;
+            padding: 2rem 2rem 2.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .back-dash {
+            position: absolute;
+            top: 20px;
+            left: 24px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .back-dash:hover {
+            background: rgba(200, 170, 255, 0.25);
+            color: white;
+        }
+
+        body.light .back-dash {
+            color: #2d2a4a;
+            background: rgba(30, 20, 50, 0.1);
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            margin: 1.8rem 0 0.3rem;
+            background: linear-gradient(120deg, #f0d0ff, #b47cff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .pin-sub {
+            color: #a79ec9;
+            margin-bottom: 1.2rem;
+        }
+
+        #pin {
+            width: 80%;
+            font-size: 2.5rem;
+            letter-spacing: 1rem;
+            text-align: center;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid #6d4f9f;
+            border-radius: 40px;
+            padding: 1rem 0.5rem;
+            color: white;
+            font-weight: 500;
+            margin: 1rem auto;
+            outline: none;
+        }
+
+        body.light #pin {
+            background: white;
+            color: #1a1430;
+            border-color: #aa8cd2;
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.8rem;
+            margin: 1.5rem 0 1rem;
+        }
+
+        .keypad button {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid #4a3f6e;
+            border-radius: 28px;
+            padding: 1.2rem 0;
+            font-size: 1.8rem;
+            font-weight: 500;
+            color: #f0e4ff;
+            transition: 0.15s;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .keypad button:active { transform: scale(0.95); background: #5d4480; }
+
+        body.light .keypad button {
+            background: #ece5ff;
+            color: #2a1f44;
+            border-color: #bba6e0;
+        }
+
+        .unlock-btn {
+            background: linear-gradient(145deg, #8750f0, #6d28d9);
+            border: none;
+            border-radius: 40px;
+            padding: 1rem 2rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: white;
+            width: 100%;
+            margin: 0.5rem 0 1rem;
+            cursor: pointer;
+            box-shadow: 0 10px 20px -5px #4c1d95;
+        }
+
+        .back-link-bottom {
+            display: inline-block;
+            margin-top: 0.8rem;
+            color: #a78bfa;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .back-link-bottom:hover { text-decoration: underline; }
+
+        /* vault top bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding: 1rem 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #7b6aa3;
+            border-radius: 40px;
+            padding: 0.5rem 1.4rem;
+            color: #e2d9ff;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-outline:hover { background: rgba(255,255,255,0.1); border-color: #b494ff; }
+
+        body.light .btn-outline {
+            color: #2b2542;
+            border-color: #917bc0;
+        }
+
+        .mode-toggle {
+            background: #312d4a;
+            border-radius: 40px;
+            padding: 0.5rem 1.2rem;
+            cursor: pointer;
+        }
+
+        /* note form */
+        .note-form {
+            display: grid;
+            gap: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        input, textarea, select {
+            background: rgba(0,0,0,0.25);
+            border: 1px solid #5d4d82;
+            border-radius: 24px;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            color: white;
+            outline: none;
+        }
+
+        body.light input, body.light textarea, body.light select {
+            background: rgba(255,255,255,0.8);
+            color: #1d172c;
+            border-color: #b59bd9;
+        }
+
+        ::placeholder { color: #b5a7d9; }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #a256f0, #7136c9);
+            border: none;
+            border-radius: 40px;
+            padding: 1rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 8px 18px #381e70;
+        }
+
+        /* notes grid */
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .note-card {
+            background: rgba(15, 12, 30, 0.6);
+            backdrop-filter: blur(8px);
+            border-radius: 1.8rem;
+            padding: 1.8rem;
+            border: 1px solid #5d4c86;
+            transition: 0.25s;
+        }
+
+        .note-card:hover { transform: translateY(-6px); border-color: #b27aff; }
+
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .note-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: linear-gradient(145deg, #f0d6ff, #cba6ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .note-time {
+            font-size: 0.8rem;
+            color: #a594cd;
+        }
+
+        .note-tags {
+            background: #42375e;
+            display: inline-block;
+            padding: 0.25rem 1rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            margin: 0.8rem 0;
+        }
+
+        .share-row {
+            display: flex;
+            gap: 0.8rem;
+            margin: 1rem 0 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            background: rgba(255,255,255,0.08);
+            border: none;
+            border-radius: 40px;
+            padding: 0.4rem 1rem;
+            font-size: 0.9rem;
+            color: #d4c4ff;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.15s;
+            text-decoration: none;
+        }
+
+        .share-btn:hover {
+            background: #6f4eb3;
+            color: white;
+        }
+
+        .note-actions {
+            display: flex;
+            gap: 0.7rem;
+            margin-top: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-danger {
+            background: #b91c1c;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 0.5rem 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* modal */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 0, 15, 0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+        }
+
+        .modal-content {
+            max-width: 500px;
+            width: 90%;
+            padding: 2.2rem;
+        }
+
+        /* toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1d1730;
+            color: #e2d5ff;
+            padding: 1rem 2.2rem;
+            border-radius: 60px;
+            font-weight: 500;
+            box-shadow: 0 20px 40px black;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 999;
+            border: 1px solid #9d7ee0;
+        }
+
+        .toast.show { opacity: 1; }
+
+        .empty-state {
+            text-align: center;
+            padding: 5rem 2rem;
+            color: #9d8dc9;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body class="dark">
+
+<div class="container">
+
+    <!-- LOGIN SCREEN with custom PIN & back (ALL ENGLISH) -->
+    <div id="loginScreen" class="glass">
+        <button class="back-dash" onclick="goToHome()">← Back to Dashboard</button>
+
+        <h2>🔐 Amanat Vault</h2>
+        <p class="pin-sub">set / enter your 4-digit secret</p>
+
+        <!-- custom PIN input -->
+        <input type="password" id="pin" maxlength="4" placeholder="****" inputmode="numeric" style="font-size:2.2rem; letter-spacing:0.8rem;">
+
+        <div class="keypad">
+            <button onclick="addDigit('1')">1</button>
+            <button onclick="addDigit('2')">2</button>
+            <button onclick="addDigit('3')">3</button>
+            <button onclick="addDigit('4')">4</button>
+            <button onclick="addDigit('5')">5</button>
+            <button onclick="addDigit('6')">6</button>
+            <button onclick="addDigit('7')">7</button>
+            <button onclick="addDigit('8')">8</button>
+            <button onclick="addDigit('9')">9</button>
+            <button onclick="clearPin()">C</button>
+            <button onclick="addDigit('0')">0</button>
+            <button onclick="backPin()">⌫</button>
+        </div>
+
+        <!-- unlock / set pin button -->
+        <button class="unlock-btn" onclick="handlePinUnlock()">➤ Unlock / Set PIN</button>
+
+        <p id="loginMessage" style="color:#f2b279; min-height:2rem;"></p>
+
+        <!-- extra back link -->
+        <a href="#" class="back-link-bottom" onclick="goToHome(); return false;">← dashboard home</a>
+    </div>
+
+    <!-- VAULT SCREEN (ALL ENGLISH) -->
+    <div id="vaultScreen" class="hidden">
+
+        <div class="top-bar glass">
+            <button class="btn-outline" onclick="goToHome()">← Home</button>
+            <h2 style="margin:0; font-size:1.9rem;">📦 Amanat notes</h2>
+            <div style="display:flex; gap:12px; align-items:center;">
+                <button class="btn-outline" onclick="exportNotes()">📄 JSON</button>
+                <button class="btn-outline" onclick="copyAllNotes()">📋 copy all</button>
+                <span class="mode-toggle" onclick="toggleTheme()">🌙/☀️</span>
+            </div>
+        </div>
+
+        <!-- note form -->
+        <div class="glass note-form">
+            <input type="text" id="nTitle" placeholder="Note title...">
+            <textarea id="nContent" rows="4" placeholder="Your private thoughts..."></textarea>
+            <select id="nTag">
+                <option value="">— choose tag —</option>
+                <option value="Personal">Personal</option>
+                <option value="Finance">Finance</option>
+                <option value="Work">Work</option>
+                <option value="Idea">Idea / Plan</option>
+                <option value="Kashi">Kashi</option>
+            </select>
+            <button class="btn-primary" onclick="saveNote()">🔒 Save secure note</button>
+        </div>
+
+        <!-- search -->
+        <input type="text" id="search" placeholder="🔍 Search notes..." oninput="filterNotes()" style="width:100%; margin:1rem 0;">
+
+        <!-- notes grid -->
+        <div id="notesList" class="notes-grid"></div>
+        <div id="emptyMsg" class="empty-state hidden">✍️ No notes yet ... start writing your secrets</div>
+    </div>
+</div>
+
+<!-- edit modal (all English) -->
+<div id="editModal" class="modal hidden">
+    <div class="modal-content glass">
+        <h3 style="margin-bottom:1rem;">✏️ Edit note</h3>
+        <input type="text" id="eTitle" placeholder="Title">
+        <textarea id="eContent" rows="5" style="margin:0.5rem 0;" placeholder="Content"></textarea>
+        <select id="eTag">
+            <option value="">— tag —</option>
+            <option value="Personal">Personal</option>
+            <option value="Finance">Finance</option>
+            <option value="Work">Work</option>
+            <option value="Idea">Idea</option>
+            <option value="Kashi">Kashi</option>
+        </select>
+        <div style="display:flex; gap:1rem; margin-top:1.8rem;">
+            <button class="btn-primary" onclick="updateNote()" style="flex:2;">Save changes</button>
+            <button class="btn-outline" onclick="closeModal()" style="flex:1;">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- toast -->
+<div id="toast" class="toast"></div>
+
+<script>
+    (function() {
+        // ---------- CUSTOM PIN (user settable) ----------
+        let USER_PIN = localStorage.getItem('amanat_user_pin') || null;   // null means not set yet
+
+        // notes data
+        let notes = JSON.parse(localStorage.getItem('amanat_notes_v3')) || [];
+        let editIdx = -1;
+
+        // UI elements
+        const loginScreen = document.getElementById('loginScreen');
+        const vaultScreen = document.getElementById('vaultScreen');
+        const pinInput = document.getElementById('pin');
+        const loginMsg = document.getElementById('loginMessage');
+        const toast = document.getElementById('toast');
+
+        function showToast(msg, duration = 2000) {
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), duration);
+        }
+
+        // ---------- PIN helpers ----------
+        window.addDigit = (d) => { if (pinInput.value.length < 4) pinInput.value += d; };
+        window.clearPin = () => pinInput.value = '';
+        window.backPin = () => pinInput.value = pinInput.value.slice(0, -1);
+
+        window.handlePinUnlock = function() {
+            const entered = pinInput.value;
+            if (entered.length !== 4) {
+                loginMsg.innerText = '❌ Please enter 4 digits';
+                return;
+            }
+
+            // case 1: no PIN set yet → set as new PIN
+            if (!USER_PIN) {
+                USER_PIN = entered;
+                localStorage.setItem('amanat_user_pin', entered);
+                pinInput.value = '';
+                loginMsg.innerText = '✅ PIN set! Now unlock with it';
+                showToast('New PIN saved');
+                return;
+            }
+
+            // case 2: PIN already set → verify
+            if (entered === USER_PIN) {
+                // unlock
+                loginScreen.classList.add('hidden');
+                vaultScreen.classList.remove('hidden');
+                renderNotes();
+                pinInput.value = '';
+                loginMsg.innerText = '';
+                showToast('🔓 Vault unlocked');
+            } else {
+                loginMsg.innerText = '❌ Wrong PIN';
+                showToast('Incorrect PIN');
+            }
+        };
+
+        // back to dashboard (you can replace the url)
+        window.goToHome = function() {
+            window.location.href = 'dashboard.html';  // change as needed
+        };
+
+        window.logout = function() {
+            vaultScreen.classList.add('hidden');
+            loginScreen.classList.remove('hidden');
+            pinInput.value = '';
+        };
+
+        // ---------- note functions ----------
+        window.saveNote = function() {
+            const title = document.getElementById('nTitle').value.trim();
+            const content = document.getElementById('nContent').value.trim();
+            const tag = document.getElementById('nTag').value;
+            if (!title || !content) return showToast('Please enter both title and content');
+
+            const time = new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
+            notes.push({ title, content, tag, time });
+            localStorage.setItem('amanat_notes_v3', JSON.stringify(notes));
+
+            document.getElementById('nTitle').value = '';
+            document.getElementById('nContent').value = '';
+            document.getElementById('nTag').value = '';
+
+            renderNotes();
+            showToast('Note saved');
+        };
+
+        function renderNotes(filterText = '') {
+            const container = document.getElementById('notesList');
+            const empty = document.getElementById('emptyMsg');
+            container.innerHTML = '';
+
+            const filtered = notes.filter(n =>
+                n.title.toLowerCase().includes(filterText.toLowerCase()) ||
+                n.content.toLowerCase().includes(filterText.toLowerCase()) ||
+                (n.tag && n.tag.toLowerCase().includes(filterText.toLowerCase()))
+            );
+
+            if (filtered.length === 0) {
+                empty.classList.remove('hidden');
+                return;
+            }
+            empty.classList.add('hidden');
+
+            filtered.forEach((note) => {
+                const idx = notes.indexOf(note); // original index for delete/edit
+                const card = document.createElement('div');
+                card.className = 'note-card';
+
+                // escape content for safe html
+                const safeContent = note.content.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
+                const tagHtml = note.tag ? `<div class="note-tags"># ${note.tag}</div>` : '';
+
+                // shareable text (plain)
+                const shareText = encodeURIComponent(`${note.title} – ${note.content} (Amanat note)`);
+                const shareUrl = encodeURIComponent(window.location.href);
+
+                card.innerHTML = `
+                    <div class="note-header">
+                        <span class="note-title">${note.title}</span>
+                        <span class="note-time">${note.time}</span>
+                    </div>
+                    ${tagHtml}
+                    <div class="note-content">${safeContent}</div>
+
+                    <!-- SOCIAL SHARE ROW (all English labels) -->
+                    <div class="share-row">
+                        <a class="share-btn" href="https://wa.me/?text=${shareText}" target="_blank">📱 WhatsApp</a>
+                        <a class="share-btn" href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}&quote=${shareText}" target="_blank">📘 FB</a>
+                        <a class="share-btn" href="https://twitter.com/intent/tweet?text=${shareText}" target="_blank">🐦 X</a>
+                        <a class="share-btn" href="https://t.me/share/url?url=${shareUrl}&text=${shareText}" target="_blank">✈️ Telegram</a>
+                        <a class="share-btn" href="mailto:?subject=Amanat note&body=${shareText}">📧 Email</a>
+                    </div>
+
+                    <div class="note-actions">
+                        <button class="btn-outline" style="padding:0.4rem 1.2rem;" onclick="copyNote('${note.content.replace(/'/g, "\\'").replace(/\n/g, ' ')}')">📋 Copy</button>
+                        <button class="btn-outline" onclick="openEdit(${idx})">✎ Edit</button>
+                        <button class="btn-danger" onclick="deleteNote(${idx})">🗑️ Delete</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        window.filterNotes = function() {
+            renderNotes(document.getElementById('search').value);
+        };
+
+        window.copyNote = function(text) {
+            navigator.clipboard.writeText(text).then(() => showToast('Copied!')).catch(() => showToast('Copy failed'));
+        };
+
+        window.copyAllNotes = function() {
+            if (!notes.length) return showToast('No notes to copy');
+            let all = '';
+            notes.forEach((n,i) => { all += `${i+1}. ${n.title}\n${n.content}\n[${n.tag || 'no tag'}]\n————\n`; });
+            navigator.clipboard.writeText(all).then(() => showToast('All notes copied')).catch(() => showToast('Copy failed'));
+        };
+
+        window.exportNotes = function() {
+            if (!notes.length) return showToast('Nothing to export');
+            const data = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(notes,null,2));
+            const a = document.createElement('a');
+            a.href = data;
+            a.download = `amanat_${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+            showToast('Exported as JSON');
+        };
+
+        window.openEdit = function(index) {
+            editIdx = index;
+            const n = notes[index];
+            document.getElementById('eTitle').value = n.title;
+            document.getElementById('eContent').value = n.content;
+            document.getElementById('eTag').value = n.tag || '';
+            document.getElementById('editModal').classList.remove('hidden');
+        };
+
+        window.closeModal = function() {
+            document.getElementById('editModal').classList.add('hidden');
+            editIdx = -1;
+        };
+
+        window.updateNote = function() {
+            if (editIdx < 0) return;
+            const title = document.getElementById('eTitle').value.trim();
+            const content = document.getElementById('eContent').value.trim();
+            const tag = document.getElementById('eTag').value;
+            if (!title || !content) return showToast('Title and content required');
+
+            notes[editIdx] = {
+                ...notes[editIdx],
+                title, content, tag,
+                time: new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }) + ' (edited)'
+            };
+            localStorage.setItem('amanat_notes_v3', JSON.stringify(notes));
+            closeModal();
+            renderNotes(document.getElementById('search').value);
+            showToast('Note updated');
+        };
+
+        window.deleteNote = function(index) {
+            if (!confirm('Are you sure? This note will be deleted.')) return;
+            notes.splice(index, 1);
+            localStorage.setItem('amanat_notes_v3', JSON.stringify(notes));
+            renderNotes(document.getElementById('search').value);
+            showToast('Deleted');
+        };
+
+        // theme toggle
+        window.toggleTheme = function() {
+            document.body.classList.toggle('light');
+            localStorage.setItem('amanat_theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        };
+
+        // initial theme load
+        if (localStorage.getItem('amanat_theme') === 'light') {
+            document.body.classList.add('light');
+        }
+
+        // If PIN exists, show hint
+        if (USER_PIN) {
+            loginMsg.innerText = '🔐 PIN already set, please unlock';
+        } else {
+            loginMsg.innerText = '✨ First time: set your 4-digit PIN';
+        }
+
+        // make renderNotes global
+        window.renderNotes = renderNotes;
+    })();
+</script>
+
+</body>
+</html>
